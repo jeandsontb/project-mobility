@@ -1,22 +1,14 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+
+import HomeStack from './src/stacks/HomeStack';
 
 const App = () => {
   return (
-    <View style={style.container}>
-      <Text>inicio do projeto</Text>
-    </View>
+    <NavigationContainer>
+      <HomeStack />
+    </NavigationContainer>
   );
 };
 
 export default App;
-
-const style = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFF',
-    color: '#000',
-  },
-});
