@@ -5,6 +5,7 @@ export const colors = {
   blackActive: '#000000',
   redActive: '#FF0000',
   greenActive: '#77DD77',
-  greyActive: '#DDD',
+  greenClean: '#D5E8DD',
+  greyActive: '#A9A9A9',
   greyStrong: '#666',
 };

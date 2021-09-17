@@ -5,32 +5,22 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import Styled from './style';
 import {colors} from '../../theme';
+import ButtonsInterval from '../../components/ButtonsInterval';
+import {AppStateValue} from '../../context/StateContext';
 
 const Home = () => {
   const navigation = useNavigation();
+  const [context, dispatch] = AppStateValue();
 
   const [connection, setConnection] = useState(false);
   const [statusService, setStatusService] = useState(false);
-  const [active, setActive] = useState(false);
-
-  const count = [
-    {active: false, time: '10s'},
-    {active: false, time: '5s'},
-    {active: false, time: '3s'},
-    {active: false, time: '1s'},
-  ];
+  const [tempInterval, setTempInterval] = useState('');
 
   const handleNavitationStatus = () => {
     navigation.navigate('Status');
   };
 
-  const handleActiveButton = identifier => {
-    console.log(identifier);
-
-    let modify = [...count, (count[identifier].active = true)];
-
-    console.log(modify);
-  };
+  console.log(context.app.buttonTemp);
 
   return (
     <Styled.Container>
@@ -76,25 +66,9 @@ const Home = () => {
         </Styled.BoxChoiceService>
       </Styled.BoxStatusService>
 
-      <Styled.BoxIntervalCommunication>
-        <Styled.TextCommunication>
-          Intervalo de comunicação
-        </Styled.TextCommunication>
+      <ButtonsInterval />
 
-        <Styled.BoxOptionChoiceInterval>
-          {count.map((item, index) => (
-            <Styled.ButtonDetailInterval
-              key={index}
-              color={active}
-              onPress={() => handleActiveButton(index)}
-              activeOpacity={0.9}>
-              <Styled.TextOptionChoice color={active}>
-                {item.time}
-              </Styled.TextOptionChoice>
-            </Styled.ButtonDetailInterval>
-          ))}
-        </Styled.BoxOptionChoiceInterval>
-      </Styled.BoxIntervalCommunication>
+      {console.log(tempInterval)}
     </Styled.Container>
   );
 };
