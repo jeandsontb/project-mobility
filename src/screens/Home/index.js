@@ -1,20 +1,18 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {StatusBar} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 import Styled from './style';
 import {colors} from '../../theme';
 import ButtonsInterval from '../../components/ButtonsInterval';
 import {AppStateValue} from '../../context/StateContext';
+import StatusTracking from '../../components/StatusTracking';
 
 const Home = () => {
   const navigation = useNavigation();
-  const [context, dispatch] = AppStateValue();
+  const [context] = AppStateValue();
 
-  const [connection, setConnection] = useState(false);
   const [statusService, setStatusService] = useState(false);
-  const [tempInterval, setTempInterval] = useState('');
 
   const handleNavitationStatus = () => {
     navigation.navigate('Status');
@@ -36,19 +34,7 @@ const Home = () => {
         </Styled.RightButtonHeader>
       </Styled.BoxHeader>
 
-      <Styled.BoxTracking>
-        <Styled.BoxIconTracking>
-          <Icon name="compass" color={colors.blueRelative} size={60} />
-        </Styled.BoxIconTracking>
-
-        <Styled.BoxInfoTracking>
-          <Styled.TextInfoTracking>My GPS - Tracking</Styled.TextInfoTracking>
-          <Styled.TextStatusTracking
-            colorStatus={connection ? colors.greenActive : colors.redActive}>
-            {connection ? 'Online' : 'Off-line'}
-          </Styled.TextStatusTracking>
-        </Styled.BoxInfoTracking>
-      </Styled.BoxTracking>
+      <StatusTracking />
 
       <Styled.BoxStatusService>
         <Styled.BoxTextService>
@@ -67,8 +53,6 @@ const Home = () => {
       </Styled.BoxStatusService>
 
       <ButtonsInterval />
-
-      {console.log(tempInterval)}
     </Styled.Container>
   );
 };
