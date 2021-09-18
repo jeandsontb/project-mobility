@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {StatusBar} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import GetLocation from 'react-native-get-location';
+import Geolocation from '@react-native-community/geolocation';
 
 import Styled from './style';
 import {colors} from '../../theme';
@@ -9,7 +9,8 @@ import ButtonsInterval from '../../components/ButtonsInterval';
 import {AppStateValue} from '../../context/StateContext';
 import StatusTracking from '../../components/StatusTracking';
 
-let timer;
+let timerId;
+let object = [];
 const Home = () => {
   const navigation = useNavigation();
   const [context] = AppStateValue();
@@ -27,64 +28,38 @@ const Home = () => {
     } else {
       initialProgressPackage('stop');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [statusService]);
 
   const initialProgressPackage = option => {
-    let counter = 0;
+    let date = new Date();
+    let temp = context.app.buttonTemp ? context.app.buttonTemp : 10000;
+
     if (option === 'start') {
-      timer = setInterval(() => {
-        console.log(counter++);
-      }, 1000);
+      timerId = setInterval(() => {
+        Geolocation.getCurrentPosition(location => {
+          object.push({
+            id: date.getTime(),
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            speed: location.coords.speed,
+            time: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`,
+          });
+
+          console.log(object);
+        });
+      }, temp);
     } else {
-      clearInterval(timer);
+      clearInterval(timerId);
+      setDataTracking(...dataTracking, object);
+      object = [];
     }
   };
 
-  const locationFindProcess = () => {
-    GetLocation.getCurrentPosition({
-      enableHighAccuracy: true,
-      timeout: 15000,
-    })
-      .then(location => {
-        let date = new Date();
-        let temp = context.app.buttonTemp ? context.app.buttonTemp : 10000;
-
-        if (statusService !== true) {
-          // let idInterval = setInterval(() => {
-          //   object.push({
-          //     id: date.getTime(),
-          //     latitude: location.latitude,
-          //     longitude: location.longitude,
-          //     speed: location.speed,
-          //     time: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`,
-          //   });
-          //   console.log(object);
-          // }, temp);
-          // if (statusService === false) {
-          //   console.log('falso');
-          //   clearInterval(idInterval);
-          // }
-          // console.log('entrou');
-          // let one = 1;
-          // var meuInterval = setInterval(() => {
-          //   console.log(one + 1);
-          // }, 1000);
-          // if (statusService === true) {
-          //   clearInterval(meuInterval);
-          //   console.log('fecha');
-          // }
-        }
-      })
-      .catch(error => {
-        const {code, message} = error;
-        console.warn(code, message);
-      });
-  };
-  // console.log(dataTracking);
+  console.log(dataTracking);
 
   const handleActiveTracking = () => {
     setStatusService(!statusService);
-    // locationFindProcess();
   };
 
   // console.log(context.app.buttonTemp);
