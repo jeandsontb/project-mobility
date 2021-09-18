@@ -7,10 +7,10 @@ const ButtonsInterval = () => {
   const [context, dispatch] = AppStateValue();
   const [controllerButtons, setControllerButtons] = useState(false);
   const [optionsButtons, setOptionsButtons] = useState([
-    {id: 0, active: true, time: '10s'},
-    {id: 1, active: false, time: '5s'},
-    {id: 2, active: false, time: '3s'},
-    {id: 3, active: false, time: '1s'},
+    {id: 0, active: true, time: '10s', value: 10000},
+    {id: 1, active: false, time: '5s', value: 5000},
+    {id: 2, active: false, time: '3s', value: 3000},
+    {id: 3, active: false, time: '1s', value: 1000},
   ]);
 
   const handleActiveButton = identifier => {
@@ -25,7 +25,7 @@ const ButtonsInterval = () => {
       dispatch({
         type: 'setTemp',
         payload: {
-          buttonTemp: vectorOptButtons[identifier].time,
+          buttonTemp: vectorOptButtons[identifier].value,
         },
       });
     }
