@@ -59,6 +59,7 @@ const Home = () => {
         id: date.getTime(),
         time: time,
         package: JSON.stringify(object),
+        status: 'Pendente a sincronizar',
       };
 
       dispatch({
