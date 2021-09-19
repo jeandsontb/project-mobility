@@ -13,7 +13,7 @@ let timerId;
 let object = [];
 const Home = () => {
   const navigation = useNavigation();
-  const [context] = AppStateValue();
+  const [context, dispatch] = AppStateValue();
 
   const [statusService, setStatusService] = useState(false);
   const [dataTracking, setDataTracking] = useState([]);
@@ -51,12 +51,31 @@ const Home = () => {
       }, temp);
     } else {
       clearInterval(timerId);
-      setDataTracking(...dataTracking, object);
+      // setDataTracking([...dataTracking, object]);
+      let time = new Date();
+      time = `${time.getHours()}:${('0' + time.getMinutes()).slice(-2)}`;
+
+      let dataObject = {
+        id: date.getTime(),
+        time: time,
+        package: JSON.stringify(object),
+      };
+
+      // console.log(dataObject);
+
+      dispatch({
+        type: 'setPakage',
+        payload: {
+          package: [...context.app.package, dataObject],
+        },
+      });
+
       object = [];
     }
   };
 
-  console.log(dataTracking);
+  // console.log(dataTracking);
+  // console.log(context.app.package);
 
   const handleActiveTracking = () => {
     setStatusService(!statusService);

@@ -23,8 +23,8 @@ export default {
     margin-top: 10px;
     justify-content: center;
     align-items: center;
-    width: 60px;
-    height: 60px;
+    width: 72px;
+    height: 62px;
     border-radius: 5px;
   `,
   TextOptionChoice: styled.Text`

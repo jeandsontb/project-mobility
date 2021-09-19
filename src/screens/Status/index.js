@@ -1,18 +1,75 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {StatusBar} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 
 import {colors} from '../../theme';
 import PackageStatus from '../../components/PackageStatus';
+import {AppStateValue} from '../../context/StateContext';
 
 import Styled from './style';
 
 const Status = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const [context] = AppStateValue();
+
+  const [packageData, setPackageData] = useState([]);
+  const [packageStatus, setPackageStatus] = useState([]);
+
+  useEffect(() => {
+    let cancelPromise = true;
+
+    if (cancelPromise) {
+      formatData();
+    }
+
+    return () => (cancelPromise = false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigation, route]);
 
   const handleGoBack = () => {
     navigation.goBack();
   };
+
+  console.log(context.app.package);
+
+  const formatData = () => {
+    let time = new Date();
+    time = `${time.getHours()}:${('0' + time.getMinutes()).slice(-2)}`;
+
+    let ver = context.app.package
+      .map(data => {
+        if (data[0] !== undefined) {
+          let objectFilter = {
+            package: data[0].id,
+            status: 'Pendente a sincronizar',
+            time: time,
+          };
+          return objectFilter;
+        }
+      })
+      .filter(f => f !== undefined);
+    setPackageStatus(ver);
+  };
+
+  // const formatData = () => {
+  //   let time = new Date();
+  //   time = `${time.getHours()}:${('0' + time.getMinutes()).slice(-2)}`;
+
+  //   let ver = context.app.package
+  //     .map(data => {
+  //       if (data[0] !== undefined) {
+  //         let objectFilter = {
+  //           package: data[0].id,
+  //           status: 'Pendente a sincronizar',
+  //           time: time,
+  //         };
+  //         return objectFilter;
+  //       }
+  //     })
+  //     .filter(f => f !== undefined);
+  //   setPackageStatus(ver);
+  // };
 
   let data = [
     {
@@ -60,11 +117,13 @@ const Status = () => {
             </Styled.BoxStatus>
           ))} */}
 
-        <Styled.ListBoxPackage
-          data={data}
-          renderItem={PackageStatus}
-          keyExtractor={item => item.package}
-        />
+        {packageStatus.length > 0 && (
+          <Styled.ListBoxPackage
+            data={data}
+            renderItem={PackageStatus}
+            keyExtractor={item => item.package}
+          />
+        )}
       </Styled.BoxStatusHistory>
     </Styled.Container>
   );
