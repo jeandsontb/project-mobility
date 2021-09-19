@@ -61,8 +61,6 @@ const Home = () => {
         package: JSON.stringify(object),
       };
 
-      // console.log(dataObject);
-
       dispatch({
         type: 'setPakage',
         payload: {
@@ -74,14 +72,9 @@ const Home = () => {
     }
   };
 
-  // console.log(dataTracking);
-  // console.log(context.app.package);
-
   const handleActiveTracking = () => {
     setStatusService(!statusService);
   };
-
-  // console.log(context.app.buttonTemp);
 
   return (
     <Styled.Container>

@@ -31,63 +31,22 @@ const Status = () => {
     navigation.goBack();
   };
 
-  console.log(context.app.package);
-
   const formatData = () => {
-    let time = new Date();
-    time = `${time.getHours()}:${('0' + time.getMinutes()).slice(-2)}`;
-
     let ver = context.app.package
       .map(data => {
-        if (data[0] !== undefined) {
+        if (data.package.length > 0) {
           let objectFilter = {
-            package: data[0].id,
+            package: data.id,
             status: 'Pendente a sincronizar',
-            time: time,
+            time: data.time,
           };
+
           return objectFilter;
         }
       })
-      .filter(f => f !== undefined);
+      .filter(filt => filt !== undefined);
     setPackageStatus(ver);
   };
-
-  // const formatData = () => {
-  //   let time = new Date();
-  //   time = `${time.getHours()}:${('0' + time.getMinutes()).slice(-2)}`;
-
-  //   let ver = context.app.package
-  //     .map(data => {
-  //       if (data[0] !== undefined) {
-  //         let objectFilter = {
-  //           package: data[0].id,
-  //           status: 'Pendente a sincronizar',
-  //           time: time,
-  //         };
-  //         return objectFilter;
-  //       }
-  //     })
-  //     .filter(f => f !== undefined);
-  //   setPackageStatus(ver);
-  // };
-
-  let data = [
-    {
-      package: '121212',
-      status: 'Sincronizado',
-      time: '11:23',
-    },
-    {
-      package: '131313',
-      status: 'Sincronizado',
-      time: '11:23',
-    },
-    {
-      package: '141414',
-      status: 'Pendente a sincronizar',
-      time: '11:23',
-    },
-  ];
 
   return (
     <Styled.Container>
@@ -102,24 +61,9 @@ const Status = () => {
       </Styled.BoxHeader>
 
       <Styled.BoxStatusHistory>
-        {/* {data.map((item, index) => (
-            <Styled.BoxStatus key={index} borderId={index}>
-              <Styled.LeftBoxStatus>
-                <Styled.TextIdStatus>
-                  Pacote ID: {item.package}
-                </Styled.TextIdStatus>
-                <Styled.TextSendStatus>{item.status}</Styled.TextSendStatus>
-              </Styled.LeftBoxStatus>
-
-              <Styled.RightBoxStatus>
-                <Styled.TextTimeStatus>{item.time}</Styled.TextTimeStatus>
-              </Styled.RightBoxStatus>
-            </Styled.BoxStatus>
-          ))} */}
-
         {packageStatus.length > 0 && (
           <Styled.ListBoxPackage
-            data={data}
+            data={packageStatus}
             renderItem={PackageStatus}
             keyExtractor={item => item.package}
           />
