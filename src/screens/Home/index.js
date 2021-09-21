@@ -49,8 +49,6 @@ const Home = () => {
           speed: location.coords.speed,
           time: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`,
         });
-
-        console.log(object);
       });
     }, temp);
   };

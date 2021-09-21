@@ -1,6 +1,6 @@
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const baseURL = 'http://10.100.0.98:8081';
+const baseURL = 'http://192.168.18.8:8081';
 
 const request = async (method, endpoint, params, token = null) => {
   method = method.toLowerCase();

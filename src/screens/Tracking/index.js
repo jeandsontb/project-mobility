@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {StatusBar} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 import {colors} from '../../theme';
 import Styled from './style';
@@ -9,24 +10,27 @@ import api from '../../service/api';
 const Tracking = () => {
   const navigation = useNavigation();
   const route = useRoute();
+  const netInfo = useNetInfo();
 
-  const [dataPackage, setDataPackage] = useState();
+  const [dataPackage, setDataPackage] = useState([]);
+  const [infoTracking, setInfoTracking] = useState('');
 
   useEffect(() => {
-    let cancelPromise = true;
-
-    if (cancelPromise) {
+    if (netInfo.isConnected) {
       dataTrackingPackage();
+      setInfoTracking('');
+    } else {
+      setInfoTracking('Sem conexão para visualizar esse pacote');
     }
-
-    return () => (cancelPromise = false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigation, route]);
+  }, [netInfo]);
 
   const dataTrackingPackage = async () => {
     const result = await api.getTrackingId(route.params.id);
 
-    console.log(result);
+    if (result.points.obj.length > 0) {
+      setDataPackage(result.points);
+    }
   };
 
   const handleGoBack = () => {
@@ -46,7 +50,13 @@ const Tracking = () => {
       </Styled.BoxHeader>
 
       <Styled.PackageContainer>
-        <Styled.TextPoints>points</Styled.TextPoints>
+        <Styled.ListPackage>
+          <Styled.BoxCoords>
+            <Styled.TextPackage>
+              {infoTracking} {dataPackage.obj}
+            </Styled.TextPackage>
+          </Styled.BoxCoords>
+        </Styled.ListPackage>
       </Styled.PackageContainer>
     </Styled.Container>
   );

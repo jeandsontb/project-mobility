@@ -31,6 +31,23 @@ export default {
     color: ${colors.greyActive};
     font-size: 16px;
   `,
-  PackageContainer: styled.View``,
-  TextPoints: styled.Text``,
+  PackageContainer: styled.View`
+    flex: 1;
+    padding: 20px 10px 10px 10px;
+  `,
+  ListPackage: styled.ScrollView`
+    width: 100%;
+    height: 100%;
+  `,
+  BoxCoords: styled.Text`
+    background-color: ${colors.whiteActive};
+    width: 100%;
+    padding: 10px 6px;
+    margin-bottom: 5px;
+    elevation: 4;
+  `,
+  TextPackage: styled.Text`
+    font-size: 16px;
+    color: ${colors.blueActive};
+  `,
 };

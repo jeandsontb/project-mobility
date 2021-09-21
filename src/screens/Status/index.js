@@ -4,7 +4,6 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {useNetInfo} from '@react-native-community/netinfo';
 
 import {colors} from '../../theme';
-import PackageStatus from '../../components/PackageStatus';
 import {AppStateValue} from '../../context/StateContext';
 import api from '../../service/api';
 
@@ -70,35 +69,20 @@ const Status = () => {
       );
 
       for (let i = 0; i < packagePreSinc.length; i++) {
-        // let result = await api.addTracking(
-        //   packagePreSinc[i].id,
-        //   packagePreSinc[i].package,
-        // );
-        let result = true;
+        let result = await api.addTracking(
+          packagePreSinc[i].id,
+          packagePreSinc[i].package,
+        );
 
         if (result) {
-          // let checkPackage = packageStatus.filter(
-          //   clean => clean.id === packagePreSinc[i].id,
-          // );
-          // console.log(checkPackage);
-          // setPackageStatus(checkPackage);
-
-          const setStatusPackage = packagePreSinc.map(item => {
-            if (item.id === '8618533a-8fd7-4ba6-bf9e-935f52bae3d6') {
+          await packagePreSinc.map(item => {
+            if (item.id === packagePreSinc[i].id) {
               item.status = true;
               formDataStatus();
             }
             return item;
           });
-
-          // console.log('novo inicio');
-          // console.log(setStatusPackage);
-          // console.log('novo fim');
         }
-
-        // console.log('inicio context');
-        // console.log(context.app.package);
-        // console.log('fim context');
       }
     }
   };
