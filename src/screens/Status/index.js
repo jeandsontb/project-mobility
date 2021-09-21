@@ -13,18 +13,16 @@ import Styled from './style';
 const Status = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const [context] = AppStateValue();
   const netInfo = useNetInfo();
+  const [context] = AppStateValue();
 
-  const [packageData, setPackageData] = useState([]);
   const [packageStatus, setPackageStatus] = useState([]);
-  const [connection, setConnection] = useState(false);
 
   useEffect(() => {
     let cancelPromise = true;
 
     if (cancelPromise) {
-      formatData();
+      formDataStatus();
     }
 
     return () => (cancelPromise = false);
@@ -34,46 +32,19 @@ const Status = () => {
   useEffect(() => {
     let cancelPromise = true;
 
-    if (cancelPromise) {
-      verifyConnection();
+    if (cancelPromise && netInfo.isConnected === true) {
+      formSendDataPakage();
     }
 
     return () => (cancelPromise = false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [netInfo]);
 
-  const verifyConnection = async () => {
-    if (netInfo.isConnected) {
-      setConnection(true);
-
-      let packagePreSinc = await context.app.package.filter(
-        obj =>
-          obj.status === 'Pendente a sincronizar' && obj.package.length > 10,
-      );
-
-      await packagePreSinc.map(async obj => {
-        let res = await api.addTracking(obj.id, obj.package);
-
-        // if (res) {
-        let updateStatusPackage = packageStatus;
-        for (let i = 0; i < updateStatusPackage.length; i++) {
-          if (updateStatusPackage[i].id === obj.id) {
-            updateStatusPackage[i].status = 'Sincronizado';
-            console.log(updateStatusPackage);
-          }
-        }
-        // }
-      });
-    } else {
-      setConnection(false);
-    }
-  };
-
   const handleGoBack = () => {
     navigation.goBack();
   };
 
-  const formatData = () => {
+  const formDataStatus = () => {
     let showPackage = context.app.package
       .map(data => {
         if (data.package.length > 10) {
@@ -82,12 +53,60 @@ const Status = () => {
             status: data.status,
             time: data.time,
           };
-
           return objectFilter;
         }
       })
       .filter(filt => filt !== undefined);
-    setPackageStatus(showPackage);
+
+    if (showPackage) {
+      setPackageStatus(showPackage);
+    }
+  };
+
+  const formSendDataPakage = async () => {
+    if (netInfo.isConnected) {
+      let packagePreSinc = await context.app.package.filter(
+        obj => obj.status === false && obj.package.length > 10,
+      );
+
+      for (let i = 0; i < packagePreSinc.length; i++) {
+        // let result = await api.addTracking(
+        //   packagePreSinc[i].id,
+        //   packagePreSinc[i].package,
+        // );
+        let result = true;
+
+        if (result) {
+          // let checkPackage = packageStatus.filter(
+          //   clean => clean.id === packagePreSinc[i].id,
+          // );
+          // console.log(checkPackage);
+          // setPackageStatus(checkPackage);
+
+          const setStatusPackage = packagePreSinc.map(item => {
+            if (item.id === '8618533a-8fd7-4ba6-bf9e-935f52bae3d6') {
+              item.status = true;
+              formDataStatus();
+            }
+            return item;
+          });
+
+          // console.log('novo inicio');
+          // console.log(setStatusPackage);
+          // console.log('novo fim');
+        }
+
+        // console.log('inicio context');
+        // console.log(context.app.package);
+        // console.log('fim context');
+      }
+    }
+  };
+
+  const handleRenderPackage = id => {
+    navigation.navigate('Tracking', {
+      id,
+    });
   };
 
   return (
@@ -106,7 +125,28 @@ const Status = () => {
         {packageStatus.length > 0 && (
           <Styled.ListBoxPackage
             data={packageStatus}
-            renderItem={PackageStatus}
+            renderItem={({item, index}) => (
+              <Styled.BoxStatus
+                key={item.package}
+                borderId={index}
+                onPress={() => handleRenderPackage(item.package)}
+                activeOpacity={0.5}>
+                <Styled.LeftBoxStatus>
+                  <Styled.TextIdStatus>
+                    Pacote ID: {item.package}
+                  </Styled.TextIdStatus>
+                  <Styled.TextSendStatus>
+                    {item.status === true
+                      ? 'Sincronizado'
+                      : 'Pendente Sincronizar'}
+                  </Styled.TextSendStatus>
+                </Styled.LeftBoxStatus>
+
+                <Styled.RightBoxStatus>
+                  <Styled.TextTimeStatus>{item.time}</Styled.TextTimeStatus>
+                </Styled.RightBoxStatus>
+              </Styled.BoxStatus>
+            )}
             keyExtractor={item => item.package}
           />
         )}

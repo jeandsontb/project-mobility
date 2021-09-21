@@ -2,7 +2,7 @@ import styled from 'styled-components/native';
 import {colors} from '../../theme';
 
 export default {
-  BoxStatus: styled.View`
+  BoxStatus: styled.TouchableOpacity`
     flex-direction: row;
     width: 100%;
     border-top-width: ${props => (props.borderId === 0 ? '1px' : 0)};

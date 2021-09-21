@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {StatusBar} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Geolocation from '@react-native-community/geolocation';
+import uuid from 'react-native-uuid';
 
 import Styled from './style';
 import {colors} from '../../theme';
@@ -11,70 +12,69 @@ import StatusTracking from '../../components/StatusTracking';
 
 let timerId;
 let object = [];
+let date = new Date();
+
 const Home = () => {
   const navigation = useNavigation();
   const [context, dispatch] = AppStateValue();
 
   const [statusService, setStatusService] = useState(false);
-  const [dataTracking, setDataTracking] = useState([]);
+
+  useEffect(() => {
+    if (statusService === true) {
+      startProgressPackage();
+    } else {
+      stopProgressPackage();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [statusService]);
 
   const handleNavitationStatus = () => {
     navigation.navigate('Status');
   };
 
-  useEffect(() => {
-    if (statusService === true) {
-      initialProgressPackage('start');
-    } else {
-      initialProgressPackage('stop');
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [statusService]);
-
-  const initialProgressPackage = option => {
-    let date = new Date();
-    let temp = context.app.buttonTemp ? context.app.buttonTemp : 10000;
-
-    if (option === 'start') {
-      timerId = setInterval(() => {
-        Geolocation.getCurrentPosition(location => {
-          object.push({
-            id: date.getTime(),
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            speed: location.coords.speed,
-            time: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`,
-          });
-
-          console.log(object);
-        });
-      }, temp);
-    } else {
-      clearInterval(timerId);
-      // setDataTracking([...dataTracking, object]);
-      let time = new Date();
-      time = `${time.getHours()}:${('0' + time.getMinutes()).slice(-2)}`;
-
-      let dataObject = {
-        id: date.getTime(),
-        time: time,
-        package: JSON.stringify(object),
-        status: 'Pendente a sincronizar',
-      };
-
-      dispatch({
-        type: 'setPakage',
-        payload: {
-          package: [...context.app.package, dataObject],
-        },
-      });
-
-      object = [];
-    }
-  };
-
   const handleActiveTracking = () => {
     setStatusService(!statusService);
+  };
+
+  const startProgressPackage = () => {
+    let temp = context.app.buttonTemp ? context.app.buttonTemp : 10000;
+
+    timerId = setInterval(() => {
+      Geolocation.getCurrentPosition(location => {
+        object.push({
+          id: uuid.v4(),
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          speed: location.coords.speed,
+          time: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`,
+        });
+
+        console.log(object);
+      });
+    }, temp);
+  };
+
+  const stopProgressPackage = () => {
+    clearInterval(timerId);
+    let time = new Date();
+    time = `${time.getHours()}:${('0' + time.getMinutes()).slice(-2)}`;
+
+    let dataObject = {
+      id: uuid.v4(),
+      time: time,
+      package: JSON.stringify(object),
+      status: false,
+    };
+
+    dispatch({
+      type: 'setPakage',
+      payload: {
+        package: [...context.app.package, dataObject],
+      },
+    });
+
+    object = [];
   };
 
   return (

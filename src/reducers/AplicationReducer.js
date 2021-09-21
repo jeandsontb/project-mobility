@@ -1,6 +1,7 @@
 const initialState = {
   buttonTemp: '',
   package: [],
+  tracking: '',
 };
 
 export default (state = initialState, action = {}) => {
@@ -11,6 +12,10 @@ export default (state = initialState, action = {}) => {
       break;
     case 'setPakage':
       return {...state, package: action.payload.package};
+      // eslint-disable-next-line no-unreachable
+      break;
+    case 'setShowTraking':
+      return {...state, tracking: action.payload.tracking};
       // eslint-disable-next-line no-unreachable
       break;
 

@@ -1,6 +1,6 @@
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const baseURL = 'http://192.168.0.105:8081';
+const baseURL = 'http://10.100.0.98:8081';
 
 const request = async (method, endpoint, params, token = null) => {
   method = method.toLowerCase();
@@ -37,8 +37,12 @@ const request = async (method, endpoint, params, token = null) => {
 };
 
 export default {
-  getPizzeria: async () => {
-    let json = await request('get', '/pizzeria', {});
+  getTracking: async () => {
+    let json = await request('get', '/points', {});
+    return json;
+  },
+  getTrackingId: async id => {
+    let json = await request('get', `/points/${id}`, {});
     return json;
   },
 
