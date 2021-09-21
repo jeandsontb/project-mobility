@@ -42,7 +42,7 @@ As seguintes ferramentas e tecnologias foram usadas na construção do projeto:
 - [Geolocation][geolocation]
 - [NetInfo][netinfo]
 - [StyledComponents][styledcomponents]
-- [VectorIcons][vectoricons]
+- [VectorIcons][vectoricon]
 - [UUID][uuid]
 - [Vscode][vscode]
 
